@@ -50,6 +50,14 @@ let
       '';
     };
   };
+
+  # Returns a list of all the input derivation ... for a derivation.
+  inputsOf = drv:
+    (drv.buildInputs or [ ]) ++
+    (drv.nativeBuildInputs or [ ]) ++
+    (drv.propagatedBuildInputs or [ ]) ++
+    (drv.propagatedNativeBuildInputs or [ ])
+  ;
 in
 {
   options = {
@@ -142,6 +150,15 @@ in
       '';
     };
 
+    packagesFrom = mkOption {
+      type = types.listOf strOrPackage;
+      default = [ ];
+      description = ''
+        Add all the build dependencies from the listed packages to the
+        environment.
+      '';
+    };
+
   };
 
   config = {
@@ -158,7 +175,10 @@ in
     ];
 
     packages =
-      builtins.filter (x: x != null)
-        (map (x: x.package) config.commands);
+      # Get all the packages from the commands
+      builtins.filter (x: x != null) (map (x: x.package) config.commands)
+      # Get all the packages from packagesFrom
+      ++ builtins.foldl' (sum: drv: sum ++ (inputsOf drv)) [ ] config.packagesFrom
+    ;
   };
 }
