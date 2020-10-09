@@ -52,3 +52,12 @@ package = "nixpkgs-fmt"
 help = "github utility"
 name = "hub"
 package = "gitAndTools.hub"
+
+[doctor]
+enable = true
+
+[[doctor.checks]]
+name = "simple"
+test = "false"
+help = "Rename false to true"
+
