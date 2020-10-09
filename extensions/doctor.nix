@@ -4,7 +4,7 @@ let
   cfg = config.doctor;
 
   toCheckScript = { name, help, test }:
-    pkgs.writeShellScriptBin "doctor-check-${name}" ''
+    pkgs.writeShellScript "doctor-check-${name}" ''
       (
         ${test}
       )
@@ -20,7 +20,7 @@ let
   doctor = pkgs.writeShellScriptBin "doctor" ''
     set -euo pipefail
 
-    for check in ${map toCheckScript cfg.checks}; do
+    for check in ${toString (map toCheckScript cfg.checks)}; do
       "$check"
     done
 

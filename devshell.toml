@@ -58,6 +58,6 @@ enable = true
 
 [[doctor.checks]]
 name = "simple"
-test = "false"
+test = "true"
 help = "Rename false to true"
 
